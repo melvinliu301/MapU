@@ -1,10 +1,8 @@
 import { Toasts, toast } from "@backpackapp-io/react-native-toast";
-import * as Location from "expo-location";
+// import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, TextInput, Text, } from "react-native";
 import MapView from "react-native-maps";
-
-
 
 
 
@@ -20,10 +18,10 @@ const MapScreen = ({ navigation }) => {
 
     const InputArea = () => {
         return (
-            <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height: "100%", top: 0, left: 0, backgroundColor: "#35dba1"}}>
-                <View style={{flex: 1, flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "100%", height: "100%", top: 0, left: 0, backgroundColor: "#35dba1"}}>
-                    <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height: "100%", top: 0, left: 0, backgroundColor: "#35dba1"}}>
-                        <Text style={styles.text}>Location</Text>
+            <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto', backgroundColor: "#35dba1"}}>
+                <View style={{ flex:1, flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto',  backgroundColor: "#35dba1"}}>
+                    <View style={{flex:1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}>
+                        <Text style={styles.text}>Current Location</Text>
                         <TextInput
                             style={styles.textInput}
                             onChangeText={text => setLocationInput(text)}
@@ -32,7 +30,7 @@ const MapScreen = ({ navigation }) => {
                         />
                     </View>
 
-                    <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height: "100%", top: 0, left: 0, backgroundColor: "#35dba1"}}>
+                    <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}>
                         <Text style={styles.text}>Destination</Text>
                         <TextInput
                             style={styles.textInput}
@@ -45,7 +43,9 @@ const MapScreen = ({ navigation }) => {
                 <TouchableOpacity
                     style={styles.searchButton}
                     onPress={searchButtonHandler}
-                />
+                >
+                    <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>Search</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -56,10 +56,11 @@ const MapScreen = ({ navigation }) => {
             <MapView
                 style={styles.map}
                 initialRegion={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.05,
-                    longitudeDelta: 0.05,
+                    latitude: 22.28397046866389,
+                    longitude: 114.13778878446234,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001,
+
                 }}
             />
         </View>
@@ -74,38 +75,48 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-end",
     },
+    inputArea: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        height: 'auto',
+        backgroundColor: "#35dba1",
+    },
     text: {
-        fontSize: 30,
+        fontSize: 16,
+        width: "30%",
         fontWeight: "bold",
         color: "white",
+        marginLeft: 10,
     },
     textInput: {
         height: 40,
-        width: "90%",
+        width: "60%",
         borderWidth: 1,
         padding: 10,
         backgroundColor: "white",
-        borderRadius: 20,
-        marginVertical: 5,
+        borderRadius: 5,
+        marginHorizontal: 5,
     },
     searchButton: {
-        height: 40,
-        width: "90%",
+        height: 'auto',
+        width: "20%",
         borderWidth: 1,
         padding: 10,
         backgroundColor: "white",
         borderRadius: 20,
-        marginVertical: 5,
+        marginHorizontal: 5,
         alignItems: "center",
         justifyContent: "center",
     },
     map: {
-        ...StyleSheet.absoluteFillObject,
+        flex: 4,
+        width: "100%",
+
     },
-    fab: {
-        position: "absolute",
-        margin: 16,
-        right: 0,
-        bottom: 0,
-    },
+
 });
+
+export default MapScreen;

@@ -90,11 +90,11 @@ const BottomTabs = () => {
                     {() => <MapScreen/>}
                 </Tab.Screen>
                 
-                <Tab.Screen 
+                {/* <Tab.Screen 
                     name="Setting" 
                     options={{
                         tabBarIcon: ({focused}) => (
-                            <Entypo name="setting" size={28} color={focused ? "white" : "gray"} />
+                            <Entypo name="user" size={28} color={focused ? "white" : "gray"} />
                         ),
                         // headerTitle: () => (
                         //     <Text style={{color: "white", fontSize: 20, fontWeight: "bold"}}>Custom title</Text>
@@ -103,7 +103,7 @@ const BottomTabs = () => {
                     }}
                 >
                     {() => <SettingScreen/>}
-                </Tab.Screen>
+                </Tab.Screen> */}
 
             </Tab.Navigator>
         </SafeAreaView>

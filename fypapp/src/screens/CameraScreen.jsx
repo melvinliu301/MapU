@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import React from "react";
 import {
     StyleSheet,
     View,
@@ -10,13 +11,12 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Camera } from 'expo-camera';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+// import Ionicons from "react-native-vector-icons/Ionicons";
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const Stack = createNativeStackNavigator();
 
 const CameraScreen = () => {
 
@@ -28,9 +28,27 @@ const CameraScreen = () => {
     const captureInterval = useRef(null);
     const [isCapturing, setIsCapturing] = useState(false);
 
+    const [hasPermission, setHasPermission] = useState(null);
+    const [isCameraReady, setIsCameraReady] = useState(false);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            setIsCapturing(true);
+            console.log("CameraScreen focused");
+            return () => {
+                setIsCapturing(false);
+                console.log("CameraScreen unfocused");
+            };
+        }, [])
+    );
+    
     useEffect(() => {
-        setIsCapturing(true);
-    }, [null]);
+        (async () => {
+            const { status } = await Camera.requestMicrophonePermissionsAsync();
+            setHasPermission(status === "granted");
+        })();
+    }
+    , []);
 
     useEffect(() => {
         if (isCapturing) {
@@ -40,13 +58,15 @@ const CameraScreen = () => {
         }
     }, [isCapturing]);
 
-    const handleCapture = () => {
-        setIsCapturing(!isCapturing);
-      };
+
+    const onCameraReady = () => {
+        setIsCameraReady(true);
+    };
 
     const startCapture = () => {
         captureInterval.current = setInterval(() => {
-            captureImage();
+            if (isCameraReady) {captureImage();
+            console.log("Capturing image");}
           }, 300);
     };
 
@@ -76,6 +96,7 @@ const CameraScreen = () => {
                 type={Camera.Constants.Type.back}
                 flashMode={Camera.Constants.FlashMode.off}
                 ratio={"16:9"}
+                onCameraReady={onCameraReady}
             >
             </Camera>
         </View>
@@ -102,3 +123,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 });
+
+export default CameraScreen;
