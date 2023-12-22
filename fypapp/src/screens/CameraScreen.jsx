@@ -32,8 +32,6 @@ const CameraScreen = () => {
             console.log("CameraScreen focused");
             return () => {
                 setIsCapturing(false);
-                stopCapture();
-                stopToast();
                 console.log("CameraScreen unfocused");
             };
         }, [])
@@ -49,12 +47,33 @@ const CameraScreen = () => {
 
 
     useEffect(() => {
+        clearInterval(captureInterval.id);
+        clearInterval(toastInterval.id);
+
         if (isCapturing) {
-            startCapture();
-            startToast();
-        } else {
-            stopCapture();
-            stopToast();
+            
+            captureInterval.id = setInterval(() => {
+                if (isCameraReady && isCapturing) {captureImage();
+                console.log("Capturing image");}
+                console.log("running");
+              }, 500);
+
+              toastInterval.id = setInterval(() => {
+                Toast.show({
+                    type: "info",
+                    position: "top",
+                    text1: "Try to find some iconic marks or landmarks",
+                    visibilityTime: 5000,
+                    autoHide: true,
+                });
+                console.log("Toast Interval");
+            }, 10000);  
+            
+        } 
+
+        return () => {
+            clearInterval(captureInterval.id);
+            clearInterval(toastInterval.id);
         }
     }, [isCameraReady, isCapturing]);
 
@@ -64,43 +83,43 @@ const CameraScreen = () => {
         console.log("Camera ready");
     };
 
-    const startCapture = () => {
-        captureInterval.id = setInterval(() => {
-            if (isCameraReady && isCapturing) {captureImage();
-            console.log("Capturing image");}
-            console.log("running");
-          }, 500);
-    };
+    // const startCapture = () => {
+    //     captureInterval.id = setInterval(() => {
+    //         if (isCameraReady && isCapturing) {captureImage();
+    //         console.log("Capturing image");}
+    //         console.log("running");
+    //       }, 500);
+    // };
 
-    const stopCapture = () => {
-        if (captureInterval.id) {
-            clearInterval(captureInterval.id);
-            captureInterval.id = null;
-            console.log("Capture stopped");
-        }
-    };
+    // const stopCapture = () => {
+    //     if (captureInterval.id) {
+    //         clearInterval(captureInterval.id);
+    //         captureInterval.id = null;
+    //         console.log("Capture stopped");
+    //     }
+    // };
 
-    const startToast = () => {
-        toastInterval.id = setInterval(() => {
-            Toast.show({
-                type: "info",
-                position: "top",
-                text1: "Try to find some iconic marks or landmarks",
-                visibilityTime: 3000,
-                autoHide: true,
-            });
-            console.log("Toast Interval");
-        }, 8000);        
-    }
+    // const startToast = () => {
+    //     toastInterval.id = setInterval(() => {
+    //         Toast.show({
+    //             type: "info",
+    //             position: "top",
+    //             text1: "Try to find some iconic marks or landmarks",
+    //             visibilityTime: 5000,
+    //             autoHide: true,
+    //         });
+    //         console.log("Toast Interval");
+    //     }, 10000);        
+    // }
 
 
-    const stopToast = () => {
-        if (toastInterval.id) {
-            clearInterval(toastInterval.id);
-            toastInterval.id = null;
-            console.log("Toast stopped");
-        }
-    }
+    // const stopToast = () => {
+    //     if (toastInterval.id) {
+    //         clearInterval(toastInterval.id);
+    //         toastInterval.id = null;
+    //         console.log("Toast stopped");
+    //     }
+    // }
 
 
     const captureImage = async () => {
