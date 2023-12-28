@@ -1,8 +1,7 @@
-// import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, TextInput, Text, } from "react-native";
 import MapView from "react-native-maps";
-
+import LocationInput from "../components/LocationInput";
 
 
 const MapScreen = ({ navigation }) => {
@@ -15,41 +14,63 @@ const MapScreen = ({ navigation }) => {
         console.log("Search button pressed");
     }
 
-   
+
+   useEffect(() => {
+        if (location) {
+            console.log("location: ", location);
+        }
+        else {
+            console.log("location: null");
+        }
+    }
+    , [location]);
+
+    useEffect(() => {   
+        if (destinationInput) {
+            console.log("destinationInput: ", destinationInput);
+        }
+        else {
+            console.log("destinationInput: null");
+        }
+    }
+    , [destinationInput]);
 
     return (
         <View style={styles.container}>
+        
 
 
-            <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto', backgroundColor: "#35dba1"}}>
-                <View style={{ flex:1, flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto',  backgroundColor: "#35dba1"}}>
-                    <View style={{flex:1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}>
+            <View style={{flex: 1.3, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto', backgroundColor: "#35dba1"}}>
+                <View style={{ flex:1, flexDirection: "column", justifyContent: "space-between", alignItems: "baseline", width: "100%", height:'auto',  backgroundColor: "#35dba1"}}>
+                    {/* <View style={{flex:1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}> */}
                         <Text style={styles.text}>Current Location</Text>
-                        <TextInput
+                        {/* <TextInput
                             id="locationInput"
                             style={styles.textInput}
                             onChangeText={text => setLocationInput(text)}
                             value={locationInput}
                             placeholder="Enter location"
-                        />
-                    </View>
+                        /> */}
+                        <LocationInput onSelectItem={(item) => setLocation(item)} />
+                    {/* </View> */}
 
-                    <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}>
+                    {/* <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}> */}
                         <Text style={styles.text}>Destination</Text>
-                        <TextInput
+                        {/* <TextInput
                             id="destinationInput"
                             style={styles.textInput}
                             onChangeText={text => setDestinationInput(text)}
                             value={destinationInput}
                             placeholder="Enter destination"
-                        />
-                    </View>
+                        /> */}
+                        <LocationInput onSelectItem={(item) => setLocation(item)} />
+                    {/* </View> */}
                 </View>
                 <TouchableOpacity
                     style={styles.searchButton}
                     onPress={searchButtonHandler}
                 >
-                    <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>Search</Text>
+                    <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>Search</Text>  
                 </TouchableOpacity>
             </View>
 
@@ -64,6 +85,7 @@ const MapScreen = ({ navigation }) => {
 
                 }}
             />
+        
         </View>
     )
 
@@ -90,7 +112,7 @@ const styles = StyleSheet.create({
 
     text: {
         fontSize: 16,
-        width: "30%",
+        width: "80%",
         fontWeight: "bold",
         color: "white",
         marginLeft: 10,
@@ -98,12 +120,13 @@ const styles = StyleSheet.create({
 
     textInput: {
         height: 40,
-        width: "60%",
+        width: "100%",
         borderWidth: 1,
         padding: 10,
         backgroundColor: "white",
         borderRadius: 5,
         marginHorizontal: 5,
+        marginLeft: 10,
     },
 
     searchButton: {

@@ -5,10 +5,12 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Alert,
 } from "react-native";
 import Toast from "react-native-toast-message";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from 'expo-camera';
+
 
 
 
@@ -17,11 +19,14 @@ const CameraScreen = () => {
     const [connection, setConnection] = useState(null);
     const [response, setResponse] = useState(null);
     const [imageStream, setImageStream] = useState(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     const cameraRef = useRef(null);
     const captureInterval = useRef(null);
     const toastInterval = useRef(null);
     const [isCapturing, setIsCapturing] = useState(false);
+    const [screenText, setScreenText] = useState("Move Camera around to capture your surroundings");
 
     const [hasPermission, setHasPermission] = useState(null);
     const [isCameraReady, setIsCameraReady] = useState(false);
@@ -29,13 +34,32 @@ const CameraScreen = () => {
     useFocusEffect(
         React.useCallback(() => {
             setIsCapturing(true);
+            setIsFocused(true);
             console.log("CameraScreen focused");
             return () => {
                 setIsCapturing(false);
+                setIsFocused(false);
                 console.log("CameraScreen unfocused");
             };
         }, [])
     );
+
+    useEffect(() => {
+        if (isConnected) {
+            console.log("Connected to server");
+            setScreenText('Move Camera around to capture your surroundings');
+        }
+        else if (!isConnected && isFocused) {
+            setScreenText('Disconnected. Please check the network connection.');
+            Alert.alert('Connection Error', 'Unable to connect to server',
+            [
+                {
+                    text: 'OK',
+                    style: 'cancel'
+                }
+            ]);
+        }
+    }, [isConnected, isFocused]);
     
     useEffect(() => {
         (async () => {
@@ -50,13 +74,13 @@ const CameraScreen = () => {
         clearInterval(captureInterval.id);
         clearInterval(toastInterval.id);
 
-        if (isCapturing) {
+        if (isCapturing && isConnected) {
             
             captureInterval.id = setInterval(() => {
                 if (isCameraReady && isCapturing) {captureImage();
                 console.log("Capturing image");}
                 console.log("running");
-              }, 500);
+              }, 2000);
 
               toastInterval.id = setInterval(() => {
                 Toast.show({
@@ -75,7 +99,7 @@ const CameraScreen = () => {
             clearInterval(captureInterval.id);
             clearInterval(toastInterval.id);
         }
-    }, [isCameraReady, isCapturing]);
+    }, [isCameraReady, isCapturing, isConnected]);
 
 
     const onCameraReady = () => {
@@ -124,8 +148,10 @@ const CameraScreen = () => {
 
     const captureImage = async () => {
         if (cameraRef.current) {
-        const { uri } = await cameraRef.current.takePictureAsync();
-        console.log(uri);
+        // take a 2 second video and send it to server using socket.io
+        const video = await cameraRef.current.recordAsync({ maxDuration: 2 });
+        console.log(video.uri);
+        
         // Send the image to the server using a network request
         // You can use a library like axios to send the image data to the server
         // Example: axios.post('http://your-server-url', { imageUri: uri });
@@ -144,10 +170,10 @@ const CameraScreen = () => {
                 onCameraReady={onCameraReady}
             >
                 <View style={styles.textContainer}>
-                    <Text style={styles.camText}>Move Camera around to capture your surroundings</Text> 
+                    <Text style={styles.camText}>{screenText}</Text> 
                 </View>
             </Camera>
-            :<Text>No access to camera</Text>}
+            :<Text>No access to camera. Please grant the camera access.</Text>}
             <Toast/>
         </View>
     )
