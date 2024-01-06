@@ -4,7 +4,8 @@ import { Platform , Text, View, Dimensions, } from "react-native";
 import { AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import LOCATION_LIST from "../constants/locationList";
 
-const LocationInput = memo(({onSelectItem}) => {
+const LocationInput = memo(({onSelectItem,
+  inputText}) => {
     
     const [loading, setLoading] = useState(false);
     const [Suggestions, setSuggestions] = useState([]);
@@ -46,7 +47,7 @@ const LocationInput = memo(({onSelectItem}) => {
     return (
         <View
         style={[
-          { flex: 1, flexDirection: 'column', alignItems: 'center', width: '100%', marginVertical: 2, marginHorizontal: 5, },
+          { flex: 1, flexDirection: 'column', alignItems: 'center', width: '95%', marginTop:2, marginHorizontal: 15, },
           Platform.select({ ios: { zIndex: 1 } }),
         ]}>
         <AutocompleteDropdown
@@ -63,9 +64,10 @@ const LocationInput = memo(({onSelectItem}) => {
           loading={loading}
           useFilter={false}
           textInputProps={{
-            placeholder: 'Type Location',
+            placeholder: inputText?inputText.title:'Type Location',
             autoCorrect: false,
             autoCapitalize: 'none',
+            placeholderTextColor: 'black',
             style: {
               borderRadius: 25,
               backgroundColor: '#fff',

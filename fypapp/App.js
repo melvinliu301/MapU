@@ -5,21 +5,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 
+LogBox.ignoreAllLogs(); 
 
-// LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const App = () => {
-    // const [user, setUser] = useState(null);
-
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             setUser(user);
-    //         } else {
-    //             setUser(null);
-    //         }
-    //     });
-    // }, []);
 
     return (
         <AutocompleteDropdownContextProvider>

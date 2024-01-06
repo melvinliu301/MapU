@@ -10,17 +10,26 @@ import {
 import Toast from "react-native-toast-message";
 import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from 'expo-camera';
-
-
-
+import { useNavigation } from "@react-navigation/native";
+import io from 'socket.io-client';
+// import {FileSystem} from 'react-native-unimodules';
 
 const CameraScreen = () => {
 
-    const [connection, setConnection] = useState(null);
+    const navigation = useNavigation();
+    //113.254.12.69
+    //192.168.68.103
+    const serverURL = "http://127.0.0.1:5000";
+    const socketRef = useRef(null);
+
     const [response, setResponse] = useState(null);
     const [imageStream, setImageStream] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    // const [isConnected, setIsConnected] = useState(true);
+
     const [isFocused, setIsFocused] = useState(false);
+
+    const [location, setLocation] = useState(null);
 
     const cameraRef = useRef(null);
     const captureInterval = useRef(null);
@@ -31,6 +40,74 @@ const CameraScreen = () => {
     const [hasPermission, setHasPermission] = useState(null);
     const [isCameraReady, setIsCameraReady] = useState(false);
 
+
+    useEffect(() => {
+        if (isFocused) {if (!isConnected) {
+            
+            socketRef.current = io( serverURL, {
+                transports: ['websocket','polling'],
+                timeout: 50000,
+                reconnectionDelay: 1000,
+                reconnectionDelayMax: 5000,
+            }
+             );
+
+            console.log('socket connected: ', socketRef.current.connected)
+
+            socketRef.current.send('message','Hello from client!');
+            console.log("Message sent to server");
+
+            socketRef.current.on('connect', () => {
+                console.log("Connected to server");
+                setIsConnected(true);
+                setScreenText('Move Camera around to capture your surroundings');
+            });
+    
+            socketRef.current.on('response', (e) => {
+                const message = JSON.parse(e.data);
+                console.log("Message received: ", message);
+                setResponse(message);
+            });
+    
+            socketRef.current.onerror = (e) => {
+                console.log("Error: ", e.message);
+                setIsConnected(false);
+            };
+    
+            socketRef.current.onclose = (e) => {
+                console.log("Connection closed: ", e.code, e.reason);
+                setIsConnected(false);
+            };}
+
+
+            return () => {
+                socketRef.current.close();
+                setIsConnected(false);
+            }
+        }
+    }, [isFocused]);
+
+    useEffect(() => {
+        if (checkResponse(response))  {
+            Alert.alert('Success', 'Current Location is found: ' + response.location.title + '.',
+            [
+                {
+                    text: 'Continue Capturing',
+                    onPress: () => {
+                        setResponse(null); 
+                        setIsCapturing(true);},
+                    style: 'cancel'
+                },
+                {
+                    text: 'Go to Map',
+                    onPress: () => navigation.navigate("Map", {location: response.location}),
+                    style: 'cancel'
+                }
+            ]);
+        }
+    }, [response]);
+
+
     useFocusEffect(
         React.useCallback(() => {
             setIsCapturing(true);
@@ -39,6 +116,7 @@ const CameraScreen = () => {
             return () => {
                 setIsCapturing(false);
                 setIsFocused(false);
+                setResponse(null);
                 console.log("CameraScreen unfocused");
             };
         }, [])
@@ -50,6 +128,7 @@ const CameraScreen = () => {
             setScreenText('Move Camera around to capture your surroundings');
         }
         else if (!isConnected && isFocused) {
+            setTimeout(() => {
             setScreenText('Disconnected. Please check the network connection.');
             Alert.alert('Connection Error', 'Unable to connect to server',
             [
@@ -57,7 +136,7 @@ const CameraScreen = () => {
                     text: 'OK',
                     style: 'cancel'
                 }
-            ]);
+            ]);}, 2000);
         }
     }, [isConnected, isFocused]);
     
@@ -70,6 +149,16 @@ const CameraScreen = () => {
     , []);
 
 
+    // for testing
+    // useEffect(() => {
+    //     if (isFocused){
+    //         setTimeout(() => {
+    //             setResponse({status: "success", location: {title:"MB237"}});
+    //             setIsConnected(true);
+    //         }, 5000);
+    //     }    
+    // }, [isFocused]);
+
     useEffect(() => {
         clearInterval(captureInterval.id);
         clearInterval(toastInterval.id);
@@ -77,9 +166,9 @@ const CameraScreen = () => {
         if (isCapturing && isConnected) {
             
             captureInterval.id = setInterval(() => {
-                if (isCameraReady && isCapturing) {captureImage();
-                console.log("Capturing image");}
-                console.log("running");
+                if (isCameraReady && isCapturing) {
+                    captureImage();
+                    console.log("Capturing image");}
               }, 2000);
 
               toastInterval.id = setInterval(() => {
@@ -101,60 +190,47 @@ const CameraScreen = () => {
         }
     }, [isCameraReady, isCapturing, isConnected]);
 
+    const checkResponse = (response) => {
+        if (response) {
+            console.log("Response: ", response);
+            if (response.status === "success") {
+                console.log("Response status: success");
+                return true;
+            }
+            else if (response.status === "error") {
+                console.log("Response status: error");
+                return false;
+            }
+            else {
+                console.log("Response status: unknown");
+                return false;
+            }
+        }
+        else {
+            console.log("Response: null");
+            return false;
+        }
+    };
+
 
     const onCameraReady = () => {
         setIsCameraReady(true);
         console.log("Camera ready");
     };
 
-    // const startCapture = () => {
-    //     captureInterval.id = setInterval(() => {
-    //         if (isCameraReady && isCapturing) {captureImage();
-    //         console.log("Capturing image");}
-    //         console.log("running");
-    //       }, 500);
-    // };
-
-    // const stopCapture = () => {
-    //     if (captureInterval.id) {
-    //         clearInterval(captureInterval.id);
-    //         captureInterval.id = null;
-    //         console.log("Capture stopped");
-    //     }
-    // };
-
-    // const startToast = () => {
-    //     toastInterval.id = setInterval(() => {
-    //         Toast.show({
-    //             type: "info",
-    //             position: "top",
-    //             text1: "Try to find some iconic marks or landmarks",
-    //             visibilityTime: 5000,
-    //             autoHide: true,
-    //         });
-    //         console.log("Toast Interval");
-    //     }, 10000);        
-    // }
-
-
-    // const stopToast = () => {
-    //     if (toastInterval.id) {
-    //         clearInterval(toastInterval.id);
-    //         toastInterval.id = null;
-    //         console.log("Toast stopped");
-    //     }
-    // }
-
-
     const captureImage = async () => {
         if (cameraRef.current) {
-        // take a 2 second video and send it to server using socket.io
+        
         const video = await cameraRef.current.recordAsync({ maxDuration: 2 });
         console.log(video.uri);
         
-        // Send the image to the server using a network request
-        // You can use a library like axios to send the image data to the server
-        // Example: axios.post('http://your-server-url', { imageUri: uri });
+        
+        const base64 = await FileSystem.readAsStringAsync(video.uri, { encoding: 'base64' });
+        console.log(base64);
+
+        
+        socketRef.current.emit('video', base64);
+        console.log("Image sent to server");
         
         }
     };

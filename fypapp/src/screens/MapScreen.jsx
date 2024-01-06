@@ -1,21 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, TextInput, Text, } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Pressable, Text, } from "react-native";
 import MapView from "react-native-maps";
 import LocationInput from "../components/LocationInput";
+import { Entypo } from '@expo/vector-icons';
+import { useRoute } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
+import LOCATION_LIST from "../constants/locationList";
 
 
 const MapScreen = ({ navigation }) => {
 
-    const [destinationInput, setDestinationInput] = useState('');
-    const [locationInput, setLocationInput] = useState('');
+    const route = useRoute();
+
+    const [destination, setDestination] = useState('');
     const [location, setLocation] = useState(null);
 
-    const searchButtonHandler = () => {
-        console.log("Search button pressed");
-    }
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("MapScreen focused");
+            return () => {
+                console.log("MapScreen unfocused");
+                setLocation(null);
+            }
+        }, [])
+    );
+
+    useEffect(() => {
+        if (route.params) {
+            const params = route.params;
+            if (params.location && LOCATION_LIST.some(item => item.title === params.location.title)) {
+                setLocation(params.location);
+            }
+        }
+    }, [route.params]);
 
 
-   useEffect(() => {
+   useEffect(() => { 
         if (location) {
             console.log("location: ", location);
         }
@@ -26,14 +46,19 @@ const MapScreen = ({ navigation }) => {
     , [location]);
 
     useEffect(() => {   
-        if (destinationInput) {
-            console.log("destinationInput: ", destinationInput);
+        if (destination) {
+            console.log("destination: ", destination);
         }
         else {
-            console.log("destinationInput: null");
+            console.log("destination: null");
         }
     }
-    , [destinationInput]);
+    , [destination]);
+
+
+    const searchButtonHandler = () => {
+        console.log("Search button pressed");
+    }
 
     return (
         <View style={styles.container}>
@@ -42,36 +67,23 @@ const MapScreen = ({ navigation }) => {
 
             <View style={{flex: 1.3, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%", height:'auto', backgroundColor: "#35dba1"}}>
                 <View style={{ flex:1, flexDirection: "column", justifyContent: "space-between", alignItems: "baseline", width: "100%", height:'auto',  backgroundColor: "#35dba1"}}>
-                    {/* <View style={{flex:1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}> */}
                         <Text style={styles.text}>Current Location</Text>
-                        {/* <TextInput
-                            id="locationInput"
-                            style={styles.textInput}
-                            onChangeText={text => setLocationInput(text)}
-                            value={locationInput}
-                            placeholder="Enter location"
-                        /> */}
-                        <LocationInput onSelectItem={(item) => setLocation(item)} />
-                    {/* </View> */}
+                        <LocationInput 
+                        onSelectItem={(item) => setLocation(item)} 
+                        inputText={location} 
+                        />
 
-                    {/* <View style={{flex: 1, flexDirection: "row", justifyContent: 'flex-start', alignItems: "baseline", width: "100%",  backgroundColor: "#35dba1"}}> */}
                         <Text style={styles.text}>Destination</Text>
-                        {/* <TextInput
-                            id="destinationInput"
-                            style={styles.textInput}
-                            onChangeText={text => setDestinationInput(text)}
-                            value={destinationInput}
-                            placeholder="Enter destination"
-                        /> */}
-                        <LocationInput onSelectItem={(item) => setLocation(item)} />
-                    {/* </View> */}
+                        <LocationInput 
+                        onSelectItem={(item) => setDestination(item)} 
+                        />
                 </View>
-                <TouchableOpacity
+                <Pressable
                     style={styles.searchButton}
                     onPress={searchButtonHandler}
                 >
-                    <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>Search</Text>  
-                </TouchableOpacity>
+                    <Entypo name="direction" size={30} color="black" />
+                </Pressable>
             </View>
 
 
@@ -84,12 +96,17 @@ const MapScreen = ({ navigation }) => {
                     longitudeDelta: 0.001,
 
                 }}
+                provider="google"
+                loadingEnabled
+                rotateEnabled={false}
             />
         
         </View>
     )
 
 }
+
+
 
 const styles = StyleSheet.create({
 
@@ -115,7 +132,7 @@ const styles = StyleSheet.create({
         width: "80%",
         fontWeight: "bold",
         color: "white",
-        marginLeft: 10,
+        marginLeft: 15,
     },
 
     textInput: {
@@ -131,9 +148,10 @@ const styles = StyleSheet.create({
 
     searchButton: {
         height: 'auto',
-        width: "20%",
+        width: "auto",
         borderWidth: 1,
         padding: 10,
+        paddingRight: 15,
         backgroundColor: "white",
         borderRadius: 20,
         marginHorizontal: 5,
