@@ -10,6 +10,7 @@ import {
 import Toast from "react-native-toast-message";
 import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from 'expo-camera';
+import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import io from 'socket.io-client';
 // import {FileSystem} from 'react-native-unimodules';
@@ -23,9 +24,7 @@ const CameraScreen = () => {
     const socketRef = useRef(null);
 
     const [response, setResponse] = useState(null);
-    const [imageStream, setImageStream] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
-    // const [isConnected, setIsConnected] = useState(true);
 
     const [isFocused, setIsFocused] = useState(false);
 
