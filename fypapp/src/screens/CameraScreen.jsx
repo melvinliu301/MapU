@@ -14,17 +14,20 @@ import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import io from 'socket.io-client';
 // import {FileSystem} from 'react-native-unimodules';
+import socket from "../components/socket";
 
 const CameraScreen = () => {
 
     const navigation = useNavigation();
     //113.254.12.69
     //192.168.68.103
-    const serverURL = "http://127.0.0.1:5000";
-    const socketRef = useRef(null);
+    // const serverURL = "http://127.0.0.1:5000";
+    // const socketRef = useRef(null);
 
-    const [response, setResponse] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
+    // const [response, setResponse] = useState(null);
+    // const [isConnected, setIsConnected] = useState(false);
+
+    const { socketRef, response, isConnected } = socket();
 
     const [isFocused, setIsFocused] = useState(false);
 
@@ -40,51 +43,57 @@ const CameraScreen = () => {
     const [isCameraReady, setIsCameraReady] = useState(false);
 
 
-    useEffect(() => {
-        if (isFocused) {if (!isConnected) {
+    // useEffect(() => {
+    //     if (isFocused) {if (!isConnected) {
             
-            socketRef.current = io( serverURL, {
-                transports: ['websocket','polling'],
-                timeout: 50000,
-                reconnectionDelay: 1000,
-                reconnectionDelayMax: 5000,
-            }
-             );
+    //         socketRef.current = io( serverURL, {
+    //             transports: ['websocket'],
+    //             timeout: 50000,
+    //             reconnectionDelay: 1000,
+    //             reconnectionDelayMax: 5000,
+    //         }
+    //          );
 
-            console.log('socket connected: ', socketRef.current.connected)
+    //         console.log('socket connected: ', socketRef.current.connected)
 
-            socketRef.current.send('message','Hello from client!');
-            console.log("Message sent to server");
+    //         socketRef.current.send('message','Hello from client!');
+    //         console.log("Message sent to server");
 
-            socketRef.current.on('connect', () => {
-                console.log("Connected to server");
-                setIsConnected(true);
-                setScreenText('Move Camera around to capture your surroundings');
-            });
+    //         socketRef.current.on('connect', () => {
+    //             console.log("Connected to server");
+    //             setIsConnected(true);
+    //             setScreenText('Move Camera around to capture your surroundings');
+    //         });
     
-            socketRef.current.on('response', (e) => {
-                const message = JSON.parse(e.data);
-                console.log("Message received: ", message);
-                setResponse(message);
-            });
+    //         socketRef.current.on('response', (e) => {
+    //             const message = JSON.parse(e.data);
+    //             console.log("Message received: ", message);
+    //             setResponse(message);
+    //         });
     
-            socketRef.current.onerror = (e) => {
-                console.log("Error: ", e.message);
-                setIsConnected(false);
-            };
+    //         socketRef.current.onerror = (e) => {
+    //             console.log("Error: ", e.message);
+    //             setIsConnected(false);
+    //         };
     
-            socketRef.current.onclose = (e) => {
-                console.log("Connection closed: ", e.code, e.reason);
-                setIsConnected(false);
-            };}
+    //         socketRef.current.onclose = (e) => {
+    //             console.log("Connection closed: ", e.code, e.reason);
+    //             setIsConnected(false);
+    //         };}
 
 
-            return () => {
-                socketRef.current.close();
-                setIsConnected(false);
-            }
-        }
-    }, [isFocused]);
+    //         return () => {
+    //             socketRef.current.close();
+    //             setIsConnected(false);
+    //             console.log("Socket closed");
+    //         }
+    //     }
+    // }, [isFocused]);
+
+    useEffect(() => {
+      if (socketRef.current) {console.log( socketRef.current.connected)}
+    }, [socketRef.current])
+    
 
     useEffect(() => {
         if (checkResponse(response))  {
@@ -93,7 +102,7 @@ const CameraScreen = () => {
                 {
                     text: 'Continue Capturing',
                     onPress: () => {
-                        setResponse(null); 
+                        // setResponse(null); 
                         setIsCapturing(true);},
                     style: 'cancel'
                 },
@@ -115,7 +124,7 @@ const CameraScreen = () => {
             return () => {
                 setIsCapturing(false);
                 setIsFocused(false);
-                setResponse(null);
+                // setResponse(null);
                 console.log("CameraScreen unfocused");
             };
         }, [])
@@ -228,7 +237,7 @@ const CameraScreen = () => {
         console.log(base64);
 
         
-        socketRef.current.emit('video', base64);
+        socketRef.current.send({'type': "video" , 'content': base64});
         console.log("Image sent to server");
         
         }
