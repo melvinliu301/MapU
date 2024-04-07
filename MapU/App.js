@@ -5,7 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 import { useRef } from "react";
-import io from 'socket.io-client';
 // LogBox.ignoreAllLogs(); 
 
 

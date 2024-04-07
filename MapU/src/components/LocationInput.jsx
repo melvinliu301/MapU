@@ -3,6 +3,8 @@ import { memo, useCallback, useRef, useState } from 'react'
 import { Platform , Text, View, Dimensions, } from "react-native";
 import { AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import LOCATION_LIST from "../constants/locationList";
+import * as Location from "expo-location";
+
 
 const LocationInput = memo(({onSelectItem,
   inputText}) => {
@@ -27,6 +29,10 @@ const LocationInput = memo(({onSelectItem,
           .map(item => ({
             id: item.id,
             title: item.title,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            building: item.building,
+            floor: item.floor,
           }))
         setSuggestions(suggestions)
         setLoading(false)
@@ -39,9 +45,37 @@ const LocationInput = memo(({onSelectItem,
 
 
         const onItemSelect = useCallback(item => {
+          if (item && item.title === 'GPS Location') {
+            (async () => {
+              let { status } = await Location.requestForegroundPermissionsAsync();
+              if (status !== 'granted') {
+                Alert.alert('Permission to access location was denied');
+                return;
+              }
+              let location = await Location.getCurrentPositionAsync({});
+              setSelected({
+                id: '0',
+                title: 'GPS Location',
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                building: null,
+                floor: null,
+              })
+              onSelectItem({
+                id: '0',
+                title: 'GPS Location',
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                building: null,
+                floor: null,
+              })
+            })()
+          } else{
             setSelected(item)
-            setSuggestions(null)
             onSelectItem(item)
+          
+          }
+          setSuggestions(null)
         }, [])
 
     return (
