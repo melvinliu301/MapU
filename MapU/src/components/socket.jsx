@@ -20,11 +20,9 @@ const socket = () => {
             }
             const close = () => {
                 console.log("Connection closed");
-                // setIsConnected(false);
             }
             const disconnect = () => {
                 console.log("Disconnected from server");
-                // setIsConnected(false);
             }
             const error = (e) => {
                 console.log("Error: ", e);

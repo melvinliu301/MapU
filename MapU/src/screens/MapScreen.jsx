@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Pressable, Text, ImageBackground, Image} from "react-native";
+import { StyleSheet, View, Pressable, Text, Button, Image} from "react-native";
 import MapView, {Polyline, Marker} from "react-native-maps";
 import LocationInput from "../components/LocationInput";
 import { Entypo } from '@expo/vector-icons';
@@ -7,15 +7,19 @@ import { useRoute } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import LOCATION_LIST from "../constants/locationList";
 import polyline from '@mapbox/polyline';
-// import { indoorMap } from "../components/indoorMap";
+import Toast from 'react-native-toast-message';
+
+// import { indoorMap } from "../components/indoorMap";         // indoor map component not integrated since SDK patch not available
 
 
 const MapScreen = ({ navigation }) => {
 
-    const [isFengMap, setIsFengMap] = useState(true);
+    const noIndoorMap = true;
+
+    const [isOutdoor, setisOutdoor] = useState(true);
 
     const toggleIndoor = () => {
-        setIsFengMap(!isFengMap);
+        setisOutdoor(!isOutdoor);
     }
 
     const API_KEY = "AIzaSyDC2rRSOkfPwtB53kvnyLHrE4mHAwLKIS0";
@@ -30,9 +34,7 @@ const MapScreen = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            console.log("MapScreen focused");
             return () => {
-                console.log("MapScreen unfocused");
                 setLocation(null);
             }
         }, [])
@@ -65,23 +67,6 @@ const MapScreen = ({ navigation }) => {
     }
     , [destination]);
 
-    // useEffect(() => {
-    //     Location.requestForegroundPermissionsAsync().then((status) => {
-    //         if (status.granted) {
-    //             if (!location){
-    //                 setHasLocation(true);
-    //                 Location.getCurrentPositionAsync({}).then((location) => {
-    //                     setLocation({
-    //                         title: 'Current GPS Location',
-    //                         latitude: location.coords.latitude,
-    //                         longitude: location.coords.longitude
-    //                     });
-    //                 });
-    //             }    
-    //         }
-    //     });
-    // }, []);
-
     const searchButtonHandler = () => {
         console.log("Search button pressed");
         setNavigate(!navigate);
@@ -107,9 +92,16 @@ const MapScreen = ({ navigation }) => {
                 } catch (error) {
                     console.error(error);
                 }
+                Toast.show({
+                    type: "info",
+                    position: "top",
+                    text1: "Path Optimized",
+                    visibilityTime: 1000,
+                    autoHide: true,
+                });
             };
-            getDirections();
         }
+        getDirections();
     }, [navigate]);
 
 
@@ -138,63 +130,68 @@ const MapScreen = ({ navigation }) => {
                 </Pressable>
             </View>
 
-            {/* <Button title={isFengMap?"View Outdoor Map":"View Indoor Map"} onPress={toggleMapView}  style={styles.switchBtn}/> */}
-            {isFengMap?
-            <MapView
-                style={styles.map}
-                initialRegion={{
-                    latitude: 22.28397046866389,
-                    longitude: 114.13778878446234,
-                    latitudeDelta: 0.001,
-                    longitudeDelta: 0.001,
+            {isOutdoor?
+                <MapView
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: 22.28397046866389,
+                        longitude: 114.13778878446234,
+                        latitudeDelta: 0.001,
+                        longitudeDelta: 0.001,
 
-                }}
-                provider="google"
-                loadingEnabled
-                rotateEnabled={false}
-                showsUserLocation={!hasLocation}
-                showsMyLocationButton={true}
-                showsCompass={true}
-                showsScale={true}
-            >
-                {location && location.id != '0' && destination && 
-                <View style={styles.infoSection}>
-                    <Text style={styles.infoText}>From: {location.title}    Building: {location.building}   Floor: {location.floor}</Text>
-                    <Text style={styles.infoText}>To: {destination.title}   Building: {destination.building}    Floor: {destination.floor}</Text>
-                </View>}
-                <Polyline
-                    coordinates={coords}
-                    strokeColor="blue"
-                    strokeWidth={6}
-                />
-                {location && <Marker
-                    coordinate={{
-                        latitude: location.latitude,
-                        longitude: location.longitude,
                     }}
-                    title={location.title}
-                    pinColor="green"
-                />}
-                {destination && <Marker
-                    coordinate={{
-                        latitude: destination.latitude,
-                        longitude: destination.longitude,
-                    }}
-                    title={destination.title}
-                    pinColor="red"
-                />}
-                <Pressable onPress={toggleIndoor} style={styles.switchBtn}><Text style={styles.switchText}>View Indoor Map</Text></Pressable>
-            </MapView>:
+                    provider="google"
+                    loadingEnabled
+                    rotateEnabled={false}
+                    showsUserLocation={!hasLocation}
+                    showsMyLocationButton={true}
+                    showsCompass={true}
+                    showsScale={true}
+                >
+                    {location && location.id != '0' && destination && 
+                    <View style={styles.infoSection}>
+                        <Text style={styles.infoText}>From: {location.title}    Building: {location.building}   Floor: {location.floor}</Text>
+                        <Text style={styles.infoText}>To: {destination.title}   Building: {destination.building}    Floor: {destination.floor}</Text>
+                    </View>}
+                    <Polyline
+                        coordinates={coords}
+                        strokeColor="blue"
+                        strokeWidth={6}
+                    />
+                    {location && <Marker
+                        coordinate={{
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                        }}
+                        title={location.title}
+                        pinColor="green"
+                    />}
+                    {destination && <Marker
+                        coordinate={{
+                            latitude: destination.latitude,
+                            longitude: destination.longitude,
+                        }}
+                        title={destination.title}
+                        pinColor="red"
+                    />}
+                    <Text style={styles.switchBtn} onPress={toggleIndoor}>View Indoor Map</Text>
+                </MapView>     
+            :
             <View style={styles.indoormap}>
-                <Image source={require('../../assets/indoor.png')} 
-                style={styles.indoormapImg}
-                />
-                    <Pressable onPress={toggleIndoor} style={styles.switchBtn}><Text style={styles.switchText}>View Outdoor Map</Text></Pressable>
+                {
+                    noIndoorMap?
+                    <Text style={styles.infoText}>Indoor Map not available.</Text>
+                    :
+                    <Image source={require('../../assets/indoor.png')} 
+                                    style={styles.indoormapImg}
+                    />
+                }
+                    <Text style={styles.switchBtn} onPress={toggleIndoor}>View Outdoor Map</Text>
             </View>
             }
 
 
-        
+        <Toast/>
         </View>
     )
 
@@ -280,9 +277,14 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 14,
         alignSelf: "center",
+
+        color: "#0048fc",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 
     switchText: {
+        position: "relative",
         color: "#0048fc",
         fontSize: 18,
         fontWeight: "bold",
@@ -296,14 +298,12 @@ const styles = StyleSheet.create({
 
     indoormap: {
         flex: 4,
-        // height:"auto",
         width: "100%",
         backgroundColor: "#F2F6FB",
     },
     indoormapImg: {
         flex: 1,
         width: "100%",
-        // height: "100%",
         resizeMode: "contain",
     },
 

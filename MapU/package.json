@@ -14,8 +14,11 @@
     "@react-native-community/geolocation": "^3.2.1",
     "@react-navigation/bottom-tabs": "^6.5.12",
     "@react-navigation/native": "^6.1.10",
+    "buffer": "^6.0.3",
     "expo": "~50.0.6",
     "expo-camera": "~14.1.1",
+    "expo-file-system": "^16.0.8",
+    "expo-location": "~16.5.5",
     "expo-status-bar": "~1.11.1",
     "fengmap": "^3.1.5",
     "react": "18.2.0",
@@ -30,8 +33,7 @@
     "react-native-websocket": "^1.0.2",
     "react-native-webview": "^13.6.4",
     "websocket": "^1.0.34",
-    "ws": "^8.16.0",
-    "expo-location": "~16.5.5"
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

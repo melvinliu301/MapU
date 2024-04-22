@@ -4,7 +4,6 @@ import { Entypo } from '@expo/vector-icons';
 import { SafeAreaView, Platform, Text } from "react-native";
 import MapScreen from "../screens/MapScreen";
 import CameraScreen from "../screens/CameraScreen.jsx";
-import SettingScreen from "../screens/SettingScreen";
 import InfoScreen from "../screens/InfoScreen";
 
 
@@ -103,21 +102,6 @@ const BottomTabs = () => {
                         {() => <InfoScreen/>}
                     </Tab.Screen>
                 }
-                
-                {/* <Tab.Screen 
-                    name="Setting" 
-                    options={{
-                        tabBarIcon: ({focused}) => (
-                            <Entypo name="user" size={28} color={focused ? "white" : "gray"} />
-                        ),
-                        // headerTitle: () => (
-                        //     <Text style={{color: "white", fontSize: 20, fontWeight: "bold"}}>Custom title</Text>
-                        // ),
-                        headerShown: false,
-                    }}
-                >
-                    {() => <SettingScreen/>}
-                </Tab.Screen> */}
 
             </Tab.Navigator>
         </SafeAreaView>

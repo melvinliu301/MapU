@@ -1,13 +1,6 @@
 
 const LOCATION_LIST = [
-    {id: '0', title: 'GPS Location', latitude: null, longitude: null, building: null, floor: null},
-    {id: '1', title: 'MB237', latitude: 22.2837940, longitude: 114.1375956, building: 'Main Building', floor: '2'},
-    {id: '2', title: 'MB238', latitude: 22.2838824, longitude: 114.1376066, building: 'Main Building', floor: '2'},
-    {id: '3', title: 'MB239', latitude: 22.2839441, longitude: 114.1376080, building: 'Main Building', floor: '2'},
-    {id: '4', title: 'MB240', latitude: 22.2840093, longitude: 114.1376019, building: 'Main Building', floor: '2'},
-    {id: '5', title: 'MB241', latitude: 22.2840642, longitude: 114.1376113, building: 'Main Building', floor: '2'},
-    {id: '6', title: 'MB248', latitude: 22.2841873, longitude: 114.1376046, building: 'Main Building', floor: '2'},
-    {id: '7', title: 'MB249', latitude: 22.2841935, longitude: 114.1376304, building: 'Main Building', floor: '2'},
+    {id: '0', title: 'GPS Location', latitude: null, longitude: null, building: null, floor: null},  
     {id: '8', title: 'MB201', latitude: 22.2841830, longitude: 114.1379680, building: 'Main Building', floor: '2'},
     {id: '9', title: 'MB202', latitude: 22.2841839, longitude: 114.1380438, building: 'Main Building', floor: '2'},
     {id: '10', title: 'MB203', latitude: 22.2841808, longitude: 114.1380904, building: 'Main Building', floor: '2'},
@@ -36,6 +29,13 @@ const LOCATION_LIST = [
     {id: '33', title: 'MB241B', latitude: 22.2841160, longitude: 114.1376063, building: 'Main Building', floor: '2'},
     {id: '34', title: 'MB241C', latitude: 22.2841399, longitude: 114.1376157, building: 'Main Building', floor: '2'},
     {id: '35', title: 'MB241D', latitude: 22.2841653, longitude: 114.1376150, building: 'Main Building', floor: '2'},
+    {id: '1', title: 'MB237', latitude: 22.2837940, longitude: 114.1375956, building: 'Main Building', floor: '2'},
+    {id: '2', title: 'MB238', latitude: 22.2838824, longitude: 114.1376066, building: 'Main Building', floor: '2'},
+    {id: '3', title: 'MB239', latitude: 22.2839441, longitude: 114.1376080, building: 'Main Building', floor: '2'},
+    {id: '4', title: 'MB240', latitude: 22.2840093, longitude: 114.1376019, building: 'Main Building', floor: '2'},
+    {id: '5', title: 'MB241', latitude: 22.2840642, longitude: 114.1376113, building: 'Main Building', floor: '2'},
+    {id: '6', title: 'MB248', latitude: 22.2841873, longitude: 114.1376046, building: 'Main Building', floor: '2'},
+    {id: '7', title: 'MB249', latitude: 22.2841935, longitude: 114.1376304, building: 'Main Building', floor: '2'},
     {id: '36', title: 'MB254', latitude: 22.2841873, longitude: 114.1376857, building: 'Main Building', floor: '2'},
     {id: '37', title: 'MB255', latitude: 22.2841898, longitude: 114.1377256, building: 'Main Building', floor: '2'},
     {id: '38', title: 'MB256', latitude: 22.2841942, longitude: 114.1377796, building: 'Main Building', floor: '2'},
@@ -43,6 +43,8 @@ const LOCATION_LIST = [
     {id: '40', title: 'MB249C', latitude:22.284209,longitude:114.1376184 , building: 'Main Building', floor: '2'},
     {id: '41', title: 'Female Washroom', latitude: 22.2837648, longitude: 114.1378101, building: 'Main Building', floor: '2'},
     {id: '42', title: 'Male Washroom', latitude: 22.2837636, longitude: 114.1378494, building: 'Main Building', floor: '2'},
+    {id: '43', title: 'Statues', latitude: 22.2841892, longitude: 114.1378701, building: 'Main Building', floor: '2'},
+
 ]
 
 export default LOCATION_LIST;
