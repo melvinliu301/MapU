@@ -12,6 +12,7 @@ import { Camera } from 'expo-camera';
 import { useNavigation } from "@react-navigation/native";
 import {w3cwebsocket as W3CWebSocket} from "websocket";
 import * as FileSystem from 'expo-file-system';
+import serverURL from "../constants/serverURL";
 
 
 const CameraScreen = () => {
@@ -19,7 +20,7 @@ const CameraScreen = () => {
     const navigation = useNavigation();
 
     // URL differs for different networks
-    const serverURL = `ws://10.68.59.238:5001`;
+    // const serverURL = `ws://10.68.144.171:5001`;
 
     const [isFocused, setIsFocused] = useState(false);
 
