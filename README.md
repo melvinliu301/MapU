@@ -28,11 +28,11 @@ To run MapU locally with Expo, follow these steps:
 
 1. Make sure you have Node.js and npm installed on your machine. To install Node.js, you can refer to https://kinsta.com/blog/how-to-install-node-js/ 
 2. Install the Expo CLI globally by running the following command:
-  '''npm install expo'''
+   ```npm install expo```
 3. Clone this repository to your local machine.
 4. Navigate to the project directory in your terminal.
 5. Make sure the package.json is in the project directory, and run the following to install the dependencies:
-  '''npm install'''
+   ```npm install```
 
 ## Usage
 
@@ -40,9 +40,9 @@ To use the app with proper connection to the server, follow these steps:
 
 1. Make sure the location detection server is running, and prepare the IP address of the server.
 2. Update the serverURL in the file MapU/src/constant/serverURL.js, for example if the server IP is 10.68.144.171:
-  '''const serverURL = `ws://10.68.144.171:5001`;'''
+  ```const serverURL = `ws://10.68.144.171:5001`;```
 3. Start the Expo development server with the command:
-  '''npx expo start'''
+  ```npx expo start```
 5. Download Expo Go on your mobile device.
 6. Open the Expo app on your mobile device and scan the QR code displayed in the terminal.
 7. The app will be compiled and loaded on your device.
