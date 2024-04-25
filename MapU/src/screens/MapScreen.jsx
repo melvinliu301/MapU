@@ -8,7 +8,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import LOCATION_LIST from "../constants/locationList";
 import polyline from '@mapbox/polyline';
 import Toast from 'react-native-toast-message';
-
+import API_KEY from "../constants/apiKey"; 
 // import { indoorMap } from "../components/indoorMap";         // indoor map component not integrated since SDK patch not available
 
 
@@ -21,8 +21,6 @@ const MapScreen = ({ navigation }) => {
     const toggleIndoor = () => {
         setisOutdoor(!isOutdoor);
     }
-
-    const API_KEY = "AIzaSyDC2rRSOkfPwtB53kvnyLHrE4mHAwLKIS0";
 
     const route = useRoute();
 
