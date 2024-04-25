@@ -4,8 +4,6 @@
 ## -- A Final Year Project of group FYP23010
 ## The University of Hong Kong, The Department of Computer Science
 
-![Video](MapU/project_info_assets/fyp23010_finvideo.mp4)
-
 ## Description
 ![Poster](MapU/project_info_assets/fyp23010_poster.jpeg)
 MapU, a app that provides indoor positioning and navigation within the campus of the University of Hong Kong. This repo contains the client side (the app) of the project. To investigate how the location detection is done using computer vision, please refer to https://github.com/enoch122/YOLO
