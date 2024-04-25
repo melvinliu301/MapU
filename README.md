@@ -1,4 +1,6 @@
 # MapU -- A HKU Navigation Mobile App with Vision Positioning
+![Logo](MapU/assets/favicon.png)
+
 ## -- A Final Year Project of group FYP23010
 ## The University of Hong Kong, The Department of Computer Science
 
